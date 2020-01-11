@@ -1,17 +1,13 @@
 <template>
-  <div id="app">
-    123
-  </div>
+  <div>推荐</div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'MusicRecommend'
 }
 </script>
 
-<style>
-#app {
+<style lang="scss" scoped>
 
-}
 </style>

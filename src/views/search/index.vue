@@ -1,17 +1,13 @@
 <template>
-  <div id="app">
-    123
-  </div>
+  <div>搜索页面</div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'MusicSearch'
 }
 </script>
 
-<style>
-#app {
+<style scoped>
 
-}
 </style>
