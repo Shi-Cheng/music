@@ -3,3 +3,4 @@ export const playMode = {
   loop: 1,
   random: 2
 }
+

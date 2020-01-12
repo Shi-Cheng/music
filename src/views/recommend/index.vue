@@ -22,13 +22,15 @@
 
 <script type="text/ecmascript-6">
 import Scroll from '../../base/scroll/scroll'
-import Slide from '../../base/slide/slide'
+import Slider from '../../base/slide/slide'
+import { getRecommend, getDiscList } from '../../api/recommend'
+import { ERR_OK } from '../../api/config'
 export default {
   name: 'MusicRecommend',
-  components: [
+  components: {
     Scroll,
-    Slide
-  ],
+    Slider
+  },
   data() {
     return {
       recommends: [],
@@ -37,10 +39,23 @@ export default {
   },
   mounted() {
     this._getRecommend()
+    this._getDiscList()
   },
   methods: {
     _getRecommend() {
-      this.recommends = []
+      getRecommend().then(res => {
+        console.log(res.data)
+        if (res.code === ERR_OK) {
+          console.log('a')
+        }
+      })
+    },
+    _getDiscList() {
+      getDiscList().then(res => {
+        if (ERR_OK) {
+          console.log(res.data)
+        }
+      })
     }
   }
 
