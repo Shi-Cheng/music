@@ -1,21 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MusicRecommend from '@/views/recommend/index'
-// import Recommend from 'views/recommend'
-Vue.use(Router)
+import RecommendDisc from '@/views/disc/index'
 
-// const Recommend = (resolve) => {
-//   import('views/recommend/index').then((module) => {
-//     resolve(module)
-//   })
-// }
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: MusicRecommend
+      redirect: '/recommend'
+    },
+    {
+      path: '/recommend',
+      component: MusicRecommend,
+      children: [{
+        path: 'id',
+        component: RecommendDisc
+      }]
     }
   ]
 })

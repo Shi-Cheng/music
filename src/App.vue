@@ -1,12 +1,22 @@
 <template>
-  <div id="app">
-    123
+  <div id="app" @touchmove.prevent>
+    <music-header/>
+    <music-tab/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
+import MusicHeader from './views/header'
+import MusicTab from './views/tab'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    'music-header': MusicHeader,
+    'music-tab': MusicTab
+  }
 }
 </script>
 

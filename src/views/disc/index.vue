@@ -1,10 +1,10 @@
 <template>
-  <div>歌手</div>
+  <div>disc</div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 export default {
-  name: 'MusicSinger'
+  name: 'RecommendDisc'
 }
 </script>
 
