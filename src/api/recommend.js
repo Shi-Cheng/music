@@ -3,9 +3,12 @@ import axios from 'axios'
 import { commonParams, discListParams } from './config'
 
 export function getRecommend() {
-  const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
-  return axios.get(url, {
+  const url = '/api/getRecommend'
+  const data = Object.assign({}, discListParams, {
     params: commonParams
+  })
+  return axios.get(url, {
+    params: data
   }).then((res) => {
     return Promise.resolve(res.data)
   })

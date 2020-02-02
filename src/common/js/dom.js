@@ -1,5 +1,5 @@
 export function hasClass(el, className) {
-  let reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
+  const reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
   return reg.test(el.className)
 }
 
@@ -8,11 +8,11 @@ export function addClass(el, className) {
     return
   }
 
-  let newClass = el.className.split(' ')
+  const newClass = el.className.split(' ')
   newClass.push(className)
   el.className = newClass.join(' ')
 }
-
+// 歌手列表字母导航样式
 export function getData(el, name, val) {
   const prefix = 'data-'
   if (val) {
@@ -21,10 +21,10 @@ export function getData(el, name, val) {
   return el.getAttribute(prefix + name)
 }
 
-let elementStyle = document.createElement('div').style
+const elementStyle = document.createElement('div').style
 
-let vendor = (() => {
-  let transformNames = {
+const vendor = (() => {
+  const transformNames = {
     webkit: 'webkitTransform',
     Moz: 'MozTransform',
     O: 'OTransform',
@@ -32,7 +32,7 @@ let vendor = (() => {
     standard: 'transform'
   }
 
-  for (let key in transformNames) {
+  for (const key in transformNames) {
     if (elementStyle[transformNames[key]] !== undefined) {
       return key
     }

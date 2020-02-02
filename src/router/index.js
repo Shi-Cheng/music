@@ -1,9 +1,31 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import MusicRecommend from '@/views/recommend/index'
-import RecommendDisc from '@/views/disc/index'
 
 Vue.use(Router)
+
+const MusicRecommend = (resolve) => {
+  import('../views/recommend/index').then((module) => {
+    resolve(module)
+  })
+}
+
+const RecommendDisc = (resolve) => {
+  import('../views/disc/index').then((module) => {
+    resolve(module)
+  })
+}
+
+const MusicSinger = (resolve) => {
+  import('../views/singer/index').then((module) => {
+    resolve(module)
+  })
+}
+
+const SingerDetail = (resolve) => {
+  import('../views/singer-detail/index').then((module) => {
+    resolve(module)
+  })
+}
 
 export default new Router({
   routes: [
@@ -15,9 +37,19 @@ export default new Router({
       path: '/recommend',
       component: MusicRecommend,
       children: [{
-        path: 'id',
+        path: ':id',
         component: RecommendDisc
       }]
+    },
+    {
+      path: '/singer',
+      component: MusicSinger,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail
+        }
+      ]
     }
   ]
 })
