@@ -1,6 +1,7 @@
-import {mapGetters, mapMutations, mapActions} from 'vuex'
-import {playMode} from 'common/js/config'
-import {shuffle} from 'common/js/util'
+// 组件共用数据、方法部分
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { playMode } from '../../common/js/config'
+import { shuffle } from '../../common/js/util'
 
 export const playlistMixin = {
   computed: {
@@ -26,6 +27,7 @@ export const playlistMixin = {
   }
 }
 
+// 相关共享模式切换逻辑
 export const playerMixin = {
   computed: {
     iconMode() {
@@ -45,15 +47,19 @@ export const playerMixin = {
       this.setPlayMode(mode)
       let list = null
       if (mode === playMode.random) {
+        // 随机播放，对播放列表进行重新洗牌
         list = shuffle(this.sequenceList)
       } else {
+        // 顺序播放和循环播放
         list = this.sequenceList
       }
-      this.resetCurrentIndex(list)
+
+      this._resetCurrentIndex(list)
+      // 当list改变时，需要重新设置当前播放歌曲的索引
       this.setPlaylist(list)
     },
-    resetCurrentIndex(list) {
-      let index = list.findIndex((item) => {
+    _resetCurrentIndex(list) {
+      const index = list.findIndex((item) => {
         return item.id === this.currentSong.id
       })
       this.setCurrentIndex(index)
@@ -73,7 +79,9 @@ export const playerMixin = {
     },
     isFavorite(song) {
       const index = this.favoriteList.findIndex((item) => {
-        return item.id === song.id
+        if (item && song) {
+          return item.id === song.id
+        }
       })
       return index > -1
     },
@@ -90,6 +98,7 @@ export const playerMixin = {
   }
 }
 
+// 搜索相关的共用模块
 export const searchMixin = {
   data() {
     return {

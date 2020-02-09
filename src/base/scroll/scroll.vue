@@ -14,7 +14,7 @@ export default {
     */
     probeType: {
       type: Number,
-      default: 1
+      default: 3
     },
     //  点击列表是否派发click事件
     click: {
@@ -58,6 +58,7 @@ export default {
     }
   },
   watch: {
+    // search-list内容改变后scroll需要重新计算高度
     data() {
       setTimeout(() => {
         this._initScroll()
@@ -81,12 +82,12 @@ export default {
 
       // 是否派发滚动事件
       if (this.listenScroll) {
-        const me = this
+        const that = this
         this.scroll.on('scroll', (pos) => {
-          me.$emit('scroll', pos)
+          that.$emit('scroll', pos)
         })
       }
-      // 是否派发滚动到底部事件，用于上拉加载
+      // 是否派发滚动到底部事件，用于上拉加载,监听scrollEnd事件
       if (this.pullup) {
         this.scroll.on('scrollEnd', () => { // 滚动到底部
           if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {

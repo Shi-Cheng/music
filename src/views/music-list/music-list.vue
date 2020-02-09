@@ -3,10 +3,10 @@
     <div class="back" @click="back">
       <i class="icon-back"/>
     </div>
-    <h1 class="title"/>
-    <div class="bg-image">
+    <h1 class="title" v-html="title"/>
+    <div ref="bgImage" :style="bgStyle" class="bg-image">
       <div class="play-wrapper">
-        <div ref="playBtn" class="play">
+        <div v-show="songs.length>0" ref="playBtn" class="play" @click="random">
           <i class="icon-play"/>
           <span class="text">随机播放全部</span>
         </div>
@@ -15,12 +15,16 @@
     </div>
     <div ref="layer" class="bg-layer"/>
     <scroll
-      ref="list"
-      class="list">
+      ref="listMusicScroll"
+      :data="songs"
+      :listen-scroll="listenScroll"
+      :probe-type="probeType"
+      class="list"
+      @scroll="scroll">
       <div class="song-list-wrapper">
-        <!--<song-list :songs="songs" :rank="rank" @select="selectItem"/>-->
+        <song-list :songs="songs" :rank="rank" @select="selectItem"/>
       </div>
-      <div class="loading-container">
+      <div v-show="!songs.length" class="loading-container">
         <loading/>
       </div>
     </scroll>
@@ -30,17 +34,122 @@
 <script>
 import Loading from '../../base/loading/loading'
 import Scroll from '../../base/scroll/scroll'
+import SongList from '../../base/song-list/song-list'
+import { prefixStyle } from '../../common/js/dom'
+import { mapActions } from 'vuex'
+import { playlistMixin } from '../../common/js/mixin'
+
+const transform = prefixStyle('transform')
+const backdrop = prefixStyle('backdrop-filter')
+const RESERVED_HEAD = 40
+const ZERO_HEIGHT = 0
 
 export default {
   name: 'MusicList',
   components: {
     Loading,
-    Scroll
+    Scroll,
+    SongList
+  },
+  mixins: [playlistMixin],
+  props: {
+    bgImage: {
+      type: String,
+      default: ''
+    },
+    songs: {
+      type: Array,
+      default: () => []
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    rank: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      scrollY: 0
+    }
+  },
+  computed: {
+    bgStyle() {
+      return `background-image:url(${this.bgImage})`
+    }
+  },
+  watch: {
+    scrollY(newY) {
+      let scale = 1
+      let zIndex = 0
+      let blur = 0
+      const percent = Math.abs(newY / this.imageHeight)
+      const translateY = Math.max(this.minTranslateY, newY)
+      if (newY > 0) {
+        // 向下拉图片
+        scale = 1 + percent
+        zIndex = 10
+      } else {
+        // 向上滚动
+        blur = Math.min(20, percent * 20)
+      }
+      this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
+      this.$refs.filter.style[backdrop] = `blur(${blur}px)`
+      // 设置title预留位置
+      // 1如果超过小于
+      if (newY < this.minTranslateY) {
+        zIndex = 10
+        this.$refs.bgImage.style.paddingTop = `${ZERO_HEIGHT}px`
+        this.$refs.bgImage.style.height = `${RESERVED_HEAD}px`
+        this.$refs.playBtn.style.display = 'none'
+      } else {
+        this.$refs.bgImage.style.paddingTop = '70%'
+        this.$refs.bgImage.style.height = `${ZERO_HEIGHT}px`
+        this.$refs.playBtn.style.display = ''
+      }
+      this.$refs.bgImage.style[transform] = `scale(${scale})`
+      this.$refs.bgImage.style.zIndex = `${zIndex}`
+    }
+  },
+  created() {
+    this.probeType = 3
+    this.listenScroll = true
+  },
+  mounted() {
+    this.imageHeight = this.$refs.bgImage.clientHeight
+    this.minTranslateY = -this.imageHeight + RESERVED_HEAD
+    this.$refs.listMusicScroll.$el.style.top = `${this.imageHeight}px`
   },
   methods: {
+    handlePlaylist(playlist) {
+      console.log(playlist.length)
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.listMusicScroll.$el.style.bottom = bottom
+      this.$refs.listMusicScroll.refresh()
+    },
     back() {
       this.$router.back()
-    }
+    },
+    random() {
+      this.randomPlay({
+        list: this.songs
+      })
+    },
+    selectItem(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index
+      })
+    },
+    scroll(pos) {
+      this.scrollY = pos.y
+    },
+    ...mapActions([
+      'selectPlay',
+      'randomPlay'
+    ])
   }
 }
 </script>
